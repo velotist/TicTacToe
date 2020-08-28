@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace TicTacToe
 {
@@ -28,10 +29,7 @@ namespace TicTacToe
         private void ToDoWhenButton_Click(object sender, RoutedEventArgs e)
         {
             Button senderAsButton = (Button)sender;
-            var actualBackgroundColor = senderAsButton.Background;
-            senderAsButton.Background = senderAsButton.Foreground;
-            senderAsButton.Foreground = actualBackgroundColor;
-
+            
             try
             {
                 if (StartNewGame())
@@ -45,11 +43,23 @@ namespace TicTacToe
                     if (player1.PlayerCharacter == "O")
                     {
                         senderAsButton.Content = "O";
+                        if(IsGameWon(player1)) {
+                            MessageBox.Show("Player 2 has won.");
+                            ClearGrid();
+                        }
                         player1.PlayerCharacter = "X";
                     }
                     else if(player1.PlayerCharacter == "X")
                     {
                         senderAsButton.Content = "X";
+                        var actualBackgroundColor = senderAsButton.Background;
+                        senderAsButton.Background = senderAsButton.Foreground;
+                        senderAsButton.Foreground = actualBackgroundColor;
+
+                        if (IsGameWon(player1)) {
+                            MessageBox.Show("Player 1 has won.");
+                            ClearGrid();
+                        }
                         player1.PlayerCharacter = "O";
                     }
                 }
@@ -87,7 +97,37 @@ namespace TicTacToe
                     return false;
                 }
             }
+
             return true;
+        }
+
+        private bool IsGameWon(Player player)
+        {
+            if(player.PlayerCharacter == "X" || player.PlayerCharacter == "O")
+            {
+                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_0.Content.ToString() == player.PlayerCharacter && kaestchen_2_0.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if(kaestchen_0_1.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_1.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if(kaestchen_0_2.Content.ToString() == player.PlayerCharacter && kaestchen_1_2.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_0_1.Content.ToString() == player.PlayerCharacter && kaestchen_0_2.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if(kaestchen_1_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_1_2.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if(kaestchen_2_0.Content.ToString() == player.PlayerCharacter && kaestchen_2_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_0_1.Content.ToString() == player.PlayerCharacter && kaestchen_0_2.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
+                    return true;
+                if (kaestchen_0_2.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_0.Content.ToString() == player.PlayerCharacter)
+                    return true;
+            }
+
+            return false;
         }
     }
 }
