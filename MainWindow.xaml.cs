@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -10,62 +11,69 @@ namespace TicTacToe
     public partial class MainWindow : Window
     {
         private static readonly Player player = new Player();
-        readonly Player player1 = player;
+        private readonly List<Button> winningButtons = new List<Button>();
+        private int clicks;
 
         public class Player
         {
             public string PlayerCharacter { get; set; }
-
-            public Player() => PlayerCharacter = "X";
         }
 
         public MainWindow()
         {
             InitializeComponent();
-            ClearGrid();
-
+            StartNewGame();
         }
 
         private void ToDoWhenButton_Click(object sender, RoutedEventArgs e)
         {
             Button senderAsButton = (Button)sender;
-            
+
             try
             {
-                if (StartNewGame())
-                {
-                    ClearGrid();
-                    player1.PlayerCharacter = "X";
-                }
+                clicks++;
 
                 if (senderAsButton.Content == null || senderAsButton.Content.ToString() == "")
                 {
-                    if (player1.PlayerCharacter == "O")
+                    bool isGameWon = false;
+                    if (player.PlayerCharacter == "O")
                     {
                         senderAsButton.Content = "O";
-                        if(IsGameWon(player1)) {
-                            MessageBox.Show("Player 2 has won.");
-                            ClearGrid();
+                        isGameWon = IsGameWon(player);
+                        if (isGameWon)
+                        {
+                            ShowWinner(player);
+                            StartNewGame();
                         }
-                        player1.PlayerCharacter = "X";
+
+                        player.PlayerCharacter = "X";
                     }
-                    else if(player1.PlayerCharacter == "X")
+                    else
                     {
                         senderAsButton.Content = "X";
-                        var actualBackgroundColor = senderAsButton.Background;
-                        senderAsButton.Background = senderAsButton.Foreground;
-                        senderAsButton.Foreground = actualBackgroundColor;
-
-                        if (IsGameWon(player1)) {
-                            MessageBox.Show("Player 1 has won.");
-                            ClearGrid();
+                        isGameWon = IsGameWon(player);
+                        if (isGameWon)
+                        {
+                            ShowWinner(player);
+                            StartNewGame();
                         }
-                        player1.PlayerCharacter = "O";
+
+                        if (!isGameWon)
+                            player.PlayerCharacter = "O";
+                        else
+                            player.PlayerCharacter = "X";
                     }
                 }
                 else
                 {
+                    clicks--;
                     MessageBox.Show("Feld bereits belegt.");
+                }
+
+                if (clicks == 9)
+                {
+                    MessageBox.Show("The game ended in a tie.");
+                    StartNewGame();
                 }
             }
             catch (System.Exception ex)
@@ -75,8 +83,22 @@ namespace TicTacToe
 
         }
 
-        private void ClearGrid()
+        private void ShowWinner(Player player)
         {
+            foreach (var item in winningButtons)
+            {
+                item.Background = new SolidColorBrush(Color.FromRgb(111, 112, 0));
+            }
+
+            MessageBox.Show("Player " + player.PlayerCharacter + " has won.");
+        }
+
+        private void StartNewGame()
+        {
+            winningButtons.Clear();
+            clicks = 0;
+            player.PlayerCharacter = "X";
+
             kaestchen_0_0.Content = "";
             kaestchen_1_0.Content = "";
             kaestchen_2_0.Content = "";
@@ -86,48 +108,82 @@ namespace TicTacToe
             kaestchen_0_2.Content = "";
             kaestchen_1_2.Content = "";
             kaestchen_2_2.Content = "";
-        }
 
-        private bool StartNewGame()
-        {
-            foreach (var item in Spielfeld.Children)
-            {
-                if (item is Button kaestchen && kaestchen.Content.ToString() == string.Empty)
-                {
-                    return false;
-                }
-            }
+            SolidColorBrush background = new SolidColorBrush(Color.FromRgb(0, 168, 198));
+            SolidColorBrush foreground = new SolidColorBrush(Color.FromRgb(250, 235, 215));
 
-            return true;
+            kaestchen_0_0.Background = background;
+            kaestchen_1_0.Background = background;
+            kaestchen_2_0.Background = background;
+            kaestchen_0_1.Background = background;
+            kaestchen_1_1.Background = background;
+            kaestchen_2_1.Background = background;
+            kaestchen_0_2.Background = background;
+            kaestchen_1_2.Background = background;
+            kaestchen_2_2.Background = background;
+
+            kaestchen_0_0.Foreground = foreground;
+            kaestchen_1_0.Foreground = foreground;
+            kaestchen_2_0.Foreground = foreground;
+            kaestchen_0_1.Foreground = foreground;
+            kaestchen_1_1.Foreground = foreground;
+            kaestchen_2_1.Foreground = foreground;
+            kaestchen_0_2.Foreground = foreground;
+            kaestchen_1_2.Foreground = foreground;
+            kaestchen_2_2.Foreground = foreground;
         }
 
         private bool IsGameWon(Player player)
         {
-            if(player.PlayerCharacter == "X" || player.PlayerCharacter == "O")
+            if (kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_0.Content.ToString() == player.PlayerCharacter && kaestchen_2_0.Content.ToString() == player.PlayerCharacter)
             {
-                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_0.Content.ToString() == player.PlayerCharacter && kaestchen_2_0.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if(kaestchen_0_1.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_1.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if(kaestchen_0_2.Content.ToString() == player.PlayerCharacter && kaestchen_1_2.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_0_1.Content.ToString() == player.PlayerCharacter && kaestchen_0_2.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if(kaestchen_1_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_1_2.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if(kaestchen_2_0.Content.ToString() == player.PlayerCharacter && kaestchen_2_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_0_1.Content.ToString() == player.PlayerCharacter && kaestchen_0_2.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if(kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
-                    return true;
-                if (kaestchen_0_2.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_0.Content.ToString() == player.PlayerCharacter)
-                    return true;
+                CreateListOfWinningButtons(kaestchen_0_0, kaestchen_1_0, kaestchen_2_0);
+                return true;
+            }
+            if (kaestchen_0_1.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_1.Content.ToString() == player.PlayerCharacter)
+            {
+                CreateListOfWinningButtons(kaestchen_0_1, kaestchen_1_1, kaestchen_2_1);
+                return true;
+            }
+            if (kaestchen_0_2.Content.ToString() == player.PlayerCharacter && kaestchen_1_2.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
+            {
+                CreateListOfWinningButtons(kaestchen_0_2, kaestchen_1_2, kaestchen_2_2);
+                return true;
+            }
+            if (kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
+            {
+                CreateListOfWinningButtons(kaestchen_0_0, kaestchen_1_1, kaestchen_2_2);
+                return true;
+            }
+            if (kaestchen_0_0.Content.ToString() == player.PlayerCharacter && kaestchen_0_1.Content.ToString() == player.PlayerCharacter && kaestchen_0_2.Content.ToString() == player.PlayerCharacter)
+            {
+                CreateListOfWinningButtons(kaestchen_0_0, kaestchen_0_1, kaestchen_0_2);
+                return true;
+            }
+            if (kaestchen_1_0.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_1_2.Content.ToString() == player.PlayerCharacter)
+            {
+                CreateListOfWinningButtons(kaestchen_1_0, kaestchen_1_1, kaestchen_1_2);
+                return true;
+            }
+            if (kaestchen_2_0.Content.ToString() == player.PlayerCharacter && kaestchen_2_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_2.Content.ToString() == player.PlayerCharacter)
+            {
+                CreateListOfWinningButtons(kaestchen_2_0, kaestchen_2_1, kaestchen_2_2);
+                return true;
+            }
+            if (kaestchen_0_2.Content.ToString() == player.PlayerCharacter && kaestchen_1_1.Content.ToString() == player.PlayerCharacter && kaestchen_2_0.Content.ToString() == player.PlayerCharacter)
+            {
+                CreateListOfWinningButtons(kaestchen_0_2, kaestchen_1_1, kaestchen_2_0);
+                return true;
             }
 
             return false;
+        }
+
+        private void CreateListOfWinningButtons(Button one, Button two, Button three)
+        {
+            winningButtons.Add(one);
+            winningButtons.Add(two);
+            winningButtons.Add(three);
         }
     }
 }
