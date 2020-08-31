@@ -80,7 +80,6 @@ namespace TicTacToe
             {
                 throw ex;
             }
-
         }
 
         private void ShowWinner(Player player)
@@ -97,7 +96,6 @@ namespace TicTacToe
         {
             winningButtons.Clear();
             clicks = 0;
-            player.PlayerCharacter = "X";
 
             kaestchen_0_0.Content = "";
             kaestchen_1_0.Content = "";
