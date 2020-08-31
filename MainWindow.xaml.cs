@@ -58,6 +58,7 @@ namespace TicTacToe
                             StartNewGame();
                         }
 
+                        // Reason of this condition: I wanted to always start with PlayerCharacter X when new game starts
                         if (!isGameWon)
                             player.PlayerCharacter = "O";
                         else
@@ -96,39 +97,18 @@ namespace TicTacToe
         {
             winningButtons.Clear();
             clicks = 0;
-
-            kaestchen_0_0.Content = "";
-            kaestchen_1_0.Content = "";
-            kaestchen_2_0.Content = "";
-            kaestchen_0_1.Content = "";
-            kaestchen_1_1.Content = "";
-            kaestchen_2_1.Content = "";
-            kaestchen_0_2.Content = "";
-            kaestchen_1_2.Content = "";
-            kaestchen_2_2.Content = "";
-
             SolidColorBrush background = new SolidColorBrush(Color.FromRgb(0, 168, 198));
             SolidColorBrush foreground = new SolidColorBrush(Color.FromRgb(250, 235, 215));
 
-            kaestchen_0_0.Background = background;
-            kaestchen_1_0.Background = background;
-            kaestchen_2_0.Background = background;
-            kaestchen_0_1.Background = background;
-            kaestchen_1_1.Background = background;
-            kaestchen_2_1.Background = background;
-            kaestchen_0_2.Background = background;
-            kaestchen_1_2.Background = background;
-            kaestchen_2_2.Background = background;
-
-            kaestchen_0_0.Foreground = foreground;
-            kaestchen_1_0.Foreground = foreground;
-            kaestchen_2_0.Foreground = foreground;
-            kaestchen_0_1.Foreground = foreground;
-            kaestchen_1_1.Foreground = foreground;
-            kaestchen_2_1.Foreground = foreground;
-            kaestchen_0_2.Foreground = foreground;
-            kaestchen_1_2.Foreground = foreground;
-            kaestchen_2_2.Foreground = foreground;
+            foreach (var item in Spielfeld.Children)
+            {
+                if(item is Button kaestchen)
+                {
+                    kaestchen.Content = "";
+                    kaestchen.Background = background;
+                    kaestchen.Foreground = foreground;
+                }
+            }
         }
 
         private bool IsGameWon(Player player)
