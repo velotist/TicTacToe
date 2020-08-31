@@ -51,6 +51,8 @@ namespace TicTacToe
                     else
                     {
                         senderAsButton.Content = "X";
+                        senderAsButton.Background = (Brush)new BrushConverter().ConvertFrom("#F9F2E7");
+                        senderAsButton.Foreground = (Brush)new BrushConverter().ConvertFrom("#00A8C6");
                         isGameWon = IsGameWon(player);
                         if (isGameWon)
                         {
